@@ -1,0 +1,19 @@
+<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Masuk — Collab</title><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="css/style.css"></head><body>
+<nav class="top"><div class="w"><a class="logo" href="index.html">Collab</a></div></nav>
+<main class="w auth"><div class="card" style="padding:28px"><h2 id="ti"></h2><p class="mu sm" style="margin-top:4px">Masuk untuk melanjutkan kolaborasi proyek, lomba, dan riset.</p>
+<form id="f"><div class="reg"><label for="n">Nama lengkap</label><input id="n" name="n"><label for="j">Jurusan</label><input id="j" name="j" placeholder="Ilmu Komputer"><label for="u">Kampus</label><input id="u" name="u" placeholder="Universitas Negeri Semarang"><label for="s">Semester</label><input id="s" name="s" type="number" min="1" max="14"><label for="k">Keahlian (pisahkan dengan koma)</label><input id="k" name="k" placeholder="Python, Figma, Pitch Deck"></div>
+<label for="e">Email kampus (.ac.id)</label><input id="e" name="e" type="email" required><label for="p">Kata sandi</label><input id="p" name="p" type="password" minlength="8" required>
+<p id="er" role="alert" style="color:var(--rd);margin-top:8px"></p><button id="go" class="btn pri" style="width:100%;margin-top:14px"></button></form>
+<button id="demo" class="btn" style="width:100%;margin-top:10px">Coba dengan akun demo</button><p id="sw" class="sm mu" style="margin-top:16px;text-align:center"></p></div>
+<div><h2>Temukan rekan beda jurusan untuk proyek nyata.</h2><p class="mu" style="margin-top:8px">Data akunmu tersimpan di browser ini saja (versi demo statis, belum ada server).</p></div></main>
+<script src="js/data.js"></script><script>
+const $=s=>document.querySelector(s),reg=()=>location.hash=='#daftar',
+H=async s=>[...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)))].map(b=>b.toString(16).padStart(2,'0')).join('');
+function mode(){const r=reg();document.querySelectorAll('.reg').forEach(e=>{e.hidden=!r;e.querySelectorAll('input').forEach(i=>i.required=i.id!='k'&&r)});$('#ti').textContent=r?'Buat akun Collab':'Selamat datang kembali';$('#go').textContent=r?'Daftar':'Masuk ke akun Collab';$('#sw').innerHTML=r?'Sudah punya akun? <a class="b" href="#masuk">Masuk</a>':'Belum punya akun? <a class="b" href="#daftar">Daftar gratis</a>';$('#er').textContent=''}
+addEventListener('hashchange',mode);mode();
+$('#f').onsubmit=async ev=>{ev.preventDefault();const d=Object.fromEntries(new FormData(ev.target)),old=JSON.parse(localStorage.getItem(K)||'null'),e=d.e.trim().toLowerCase(),h=await H(d.p);
+if(reg()){if(old&&!confirm('Akun lama di browser ini akan diganti. Lanjutkan?'))return;localStorage.setItem(K,JSON.stringify(seed({n:d.n.trim(),j:d.j.trim(),u:d.u.trim(),s:+d.s,e,h,v:e.endsWith('.ac.id'),sk:d.k.split(',').map(x=>x.trim()).filter(Boolean)},false)))}
+else if(!old||old.user.e!=e||old.user.h!=h)return $('#er').textContent='Email atau kata sandi salah, atau akun belum dibuat di browser ini.';
+localStorage.setItem(K+'-in','1');location.href='app.html#beranda'};
+$('#demo').onclick=()=>{localStorage.setItem(K,JSON.stringify(seed({n:'Kevin Pratama',j:'Ilmu Komputer',u:'Universitas Indonesia',s:5,e:'kevin@demo.ac.id',v:true,sk:['React.js','Next.js','Node.js','PostgreSQL','FastAPI','Figma','Docker']},true)));localStorage.setItem(K+'-in','1');location.href='app.html#beranda'};
+</script></body></html>
